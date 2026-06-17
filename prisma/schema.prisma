@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Availability {
+  INCLUDED
+  ADDON
+  NOT_AVAILABLE
+}
+
+enum AddonPricingModel {
+  FIXED_MONTHLY
+  PER_SEAT
+  PERCENT_OF_PRODUCT
+}
+
+enum TermLength {
+  MONTHLY
+  ANNUAL
+  TWO_YEAR
+}
+
+model Product {
+  id        String    @id @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  tiers     Tier[]
+  features  Feature[]
+  quotes    Quote[]
+}
+
+model Tier {
+  id               String                    @id @default(cuid())
+  productId        String
+  product          Product                   @relation(fields: [productId], references: [id])
+  name             String
+  order            Int
+  basePricePerSeat Decimal                   @db.Decimal(10, 2)
+  createdAt        DateTime                  @default(now())
+  availabilities   FeatureTierAvailability[]
+  quotes           Quote[]
+
+  @@unique([productId, name])
+}
+
+model Feature {
+  id              String                    @id @default(cuid())
+  productId       String
+  product         Product                   @relation(fields: [productId], references: [id])
+  name            String
+  createdAt       DateTime                  @default(now())
+  availabilities  FeatureTierAvailability[]
+  addonSelections QuoteAddonSelection[]
+
+  @@unique([productId, name])
+}
+
+// One row per (Feature, Tier) "matrix cell" -- availability for that tier.
+model FeatureTierAvailability {
+  id           String        @id @default(cuid())
+  featureId    String
+  feature      Feature       @relation(fields: [featureId], references: [id])
+  tierId       String
+  tier         Tier          @relation(fields: [tierId], references: [id])
+  availability Availability  @default(NOT_AVAILABLE)
+  updatedAt    DateTime      @updatedAt
+  addonPricing AddonPricing?
+
+  @@unique([featureId, tierId])
+}
+
+// Present only while the parent FeatureTierAvailability.availability == ADDON.
+model AddonPricing {
+  id                        String                  @id @default(cuid())
+  featureTierAvailabilityId String                  @unique
+  featureTierAvailability   FeatureTierAvailability @relation(fields: [featureTierAvailabilityId], references: [id])
+  pricingModel              AddonPricingModel
+  pricingValue              Decimal                 @db.Decimal(10, 2)
+  updatedAt                 DateTime                @updatedAt
+}
+
+model Quote {
+  id                     String                @id @default(cuid())
+  name                   String
+  customerName           String
+  productId              String
+  product                Product               @relation(fields: [productId], references: [id])
+  tierId                 String
+  tier                   Tier                  @relation(fields: [tierId], references: [id])
+  seats                  Int
+  termLength             TermLength
+  overallDiscountPercent Decimal               @db.Decimal(5, 2) @default(0)
+  createdAt              DateTime              @default(now())
+  addonSelections        QuoteAddonSelection[]
+  lineItems              QuoteLineItem[]
+  subtotal               Decimal               @db.Decimal(12, 2)
+  overallDiscountAmount  Decimal               @db.Decimal(12, 2) @default(0)
+  total                  Decimal               @db.Decimal(12, 2)
+}
+
+// One row per line item, written once at quote-creation time, never updated.
+model QuoteLineItem {
+  id          String  @id @default(cuid())
+  quoteId     String
+  quote       Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  order       Int
+  label       String
+  description String
+  notes       String
+  amount      Decimal @db.Decimal(12, 2)
+}
+
+model QuoteAddonSelection {
+  id        String  @id @default(cuid())
+  quoteId   String
+  quote     Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  featureId String
+  feature   Feature @relation(fields: [featureId], references: [id])
+  seats     Int?
+}
