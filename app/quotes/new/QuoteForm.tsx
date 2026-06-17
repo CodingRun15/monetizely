@@ -145,10 +145,10 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
   }
 
   return (
-    <div className="flex flex-col gap-8 lg:flex-row">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:w-1/2">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="name" className="text-sm font-medium">
+    <div className="flex flex-col gap-10 lg:flex-row">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 lg:w-1/2">
+        <div className="field">
+          <label htmlFor="name" className="field-label">
             Quote name
           </label>
           <input
@@ -157,12 +157,12 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
             onChange={(e) => setName(e.target.value)}
             required
             placeholder="Acme Corp - Q3 2026 proposal"
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-input"
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="customerName" className="text-sm font-medium">
+        <div className="field">
+          <label htmlFor="customerName" className="field-label">
             Customer
           </label>
           <input
@@ -171,19 +171,19 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
             onChange={(e) => setCustomerName(e.target.value)}
             required
             placeholder="Acme Corporation"
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-input"
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="productId" className="text-sm font-medium">
+        <div className="field">
+          <label htmlFor="productId" className="field-label">
             Product
           </label>
           <select
             id="productId"
             value={productId}
             onChange={(e) => handleProductChange(e.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-input"
           >
             {products.map((p) => (
               <option key={p.id} value={p.id}>
@@ -193,15 +193,15 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
           </select>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="tierId" className="text-sm font-medium">
+        <div className="field">
+          <label htmlFor="tierId" className="field-label">
             Tier
           </label>
           <select
             id="tierId"
             value={tierId}
             onChange={(e) => handleTierChange(e.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-input"
           >
             {tiers.map((t) => (
               <option key={t.id} value={t.id}>
@@ -211,8 +211,8 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
           </select>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="seats" className="text-sm font-medium">
+        <div className="field">
+          <label htmlFor="seats" className="field-label">
             Seats
           </label>
           <input
@@ -222,19 +222,19 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
             value={seats}
             onChange={(e) => setSeats(Number(e.target.value))}
             required
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-input font-mono"
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="termLength" className="text-sm font-medium">
+        <div className="field">
+          <label htmlFor="termLength" className="field-label">
             Term length
           </label>
           <select
             id="termLength"
             value={termLength}
             onChange={(e) => setTermLength(e.target.value as TermLength)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-input"
           >
             {(Object.keys(TERM_LABEL) as TermLength[]).map((term) => (
               <option key={term} value={term}>
@@ -246,9 +246,9 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
         </div>
 
         {addonOptions.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium">Add-ons available on this tier</span>
-            <div className="flex flex-col gap-2 rounded-md border border-zinc-200 bg-white p-3">
+          <div className="field">
+            <span className="field-label">Add-ons available on this tier</span>
+            <div className="flex flex-col gap-3 rounded-sm border border-rule p-4">
               {addonOptions.map((addon) => {
                 const selection = addonSelections[addon.featureId];
                 return (
@@ -259,9 +259,11 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
                       checked={selection?.checked ?? false}
                       onChange={(e) => toggleAddon(addon.featureId, e.target.checked)}
                     />
-                    <label htmlFor={`addon-${addon.featureId}`} className="flex-1 text-sm">
+                    <label htmlFor={`addon-${addon.featureId}`} className="flex-1 text-sm text-ink">
                       {addon.featureName}{" "}
-                      <span className="text-zinc-500">— {addonHint(addon.pricingModel, addon.pricingValue)}</span>
+                      <span className="font-mono text-xs text-gold">
+                        — {addonHint(addon.pricingModel, addon.pricingValue)}
+                      </span>
                     </label>
                     {selection?.checked && addon.pricingModel === "PER_SEAT" && (
                       <input
@@ -270,7 +272,7 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
                         placeholder="Seats"
                         value={selection.seats}
                         onChange={(e) => setAddonSeats(addon.featureId, e.target.value)}
-                        className="w-24 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+                        className="field-input w-24 font-mono"
                       />
                     )}
                   </div>
@@ -280,8 +282,8 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
           </div>
         )}
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="overallDiscountPercent" className="text-sm font-medium">
+        <div className="field">
+          <label htmlFor="overallDiscountPercent" className="field-label">
             Overall discount (%, optional)
           </label>
           <input
@@ -291,56 +293,51 @@ export function QuoteForm({ products }: { products: ProductOption[] }) {
             max={100}
             value={overallDiscountPercent}
             onChange={(e) => setOverallDiscountPercent(Number(e.target.value))}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="field-input font-mono"
           />
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-danger">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="self-start rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50"
-        >
+        <button type="submit" disabled={submitting} className="btn-primary self-start">
           {submitting ? "Saving…" : "Save quote"}
         </button>
       </form>
 
       <div className="flex-1 lg:w-1/2">
-        <h2 className="mb-3 text-lg font-medium">Live preview</h2>
-        {preview.error && <p className="text-sm text-amber-700">{preview.error}</p>}
+        <span className="text-xs font-medium uppercase tracking-[0.18em] text-gold">Preview</span>
+        <h2 className="mb-4 font-display text-xl text-ink">Live calculation</h2>
+        {preview.error && <p className="text-sm text-gold">{preview.error}</p>}
         {!preview.error && !preview.result && (
-          <p className="text-sm text-zinc-500">Fill in the form to see a price preview.</p>
+          <p className="text-sm text-ink-soft">Fill in the form to see a price preview.</p>
         )}
         {preview.result && (
-          <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-200 bg-zinc-50 text-left">
-                  <th className="px-3 py-2 font-medium">Line item</th>
-                  <th className="px-3 py-2 font-medium">How it was calculated</th>
-                  <th className="px-3 py-2 text-right font-medium">Amount</th>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b-2 border-ink/80 text-left text-xs font-medium uppercase tracking-[0.08em] text-ink-soft">
+                <th className="py-2 pr-3 font-medium">Line item</th>
+                <th className="py-2 pr-3 font-medium">How it was calculated</th>
+                <th className="py-2 text-right font-medium">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {preview.result.lineItems.map((item, i) => (
+                <tr key={i} className="border-b border-rule-soft last:border-0">
+                  <td className="py-2.5 pr-3 text-ink">{item.label}</td>
+                  <td className="py-2.5 pr-3 text-ink-soft">{item.description}</td>
+                  <td className="py-2.5 text-right font-mono">{formatCurrency(item.amount)}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {preview.result.lineItems.map((item, i) => (
-                  <tr key={i} className="border-b border-zinc-100 last:border-0">
-                    <td className="px-3 py-2 font-medium">{item.label}</td>
-                    <td className="px-3 py-2 text-zinc-500">{item.description}</td>
-                    <td className="px-3 py-2 text-right">{formatCurrency(item.amount)}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className="border-t border-zinc-200 bg-zinc-50 font-semibold">
-                  <td className="px-3 py-2" colSpan={2}>
-                    Total
-                  </td>
-                  <td className="px-3 py-2 text-right">{formatCurrency(preview.result.total)}</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr key={preview.result.total} className="total-flash border-t-2 border-ink/80 font-semibold text-ink">
+                <td className="py-2.5 pr-3" colSpan={2}>
+                  Total
+                </td>
+                <td className="py-2.5 text-right font-mono">{formatCurrency(preview.result.total)}</td>
+              </tr>
+            </tfoot>
+          </table>
         )}
       </div>
     </div>

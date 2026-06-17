@@ -20,6 +20,33 @@ function addonSummary(pricingModel: string, pricingValue: number): string {
   }
 }
 
+function AvailabilityBadge({
+  availability,
+  pricingModel,
+  pricingValue,
+}: {
+  availability: string;
+  pricingModel?: string;
+  pricingValue?: number;
+}) {
+  if (availability === "INCLUDED") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-sm text-emerald">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden />
+        Included
+      </span>
+    );
+  }
+  if (availability === "ADDON" && pricingModel && pricingValue !== undefined) {
+    return (
+      <span className="inline-flex items-center rounded-sm border border-gold/40 bg-gold-soft px-2 py-0.5 font-mono text-xs text-gold">
+        {addonSummary(pricingModel, pricingValue)}
+      </span>
+    );
+  }
+  return <span className="text-sm text-not-available">—</span>;
+}
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -46,56 +73,56 @@ export default async function ProductDetailPage({
 
   return (
     <div className="flex flex-col gap-10">
-      <div>
-        <h1 className="text-2xl font-semibold">{product.name}</h1>
-        <Link href="/catalog" className="text-sm text-zinc-500 hover:underline">
-          ← Back to catalog
+      <div className="border-b border-rule pb-6">
+        <Link href="/catalog" className="text-xs uppercase tracking-[0.12em] text-ink-soft hover:text-emerald">
+          ← Catalog
         </Link>
+        <h1 className="mt-2 font-display text-3xl text-ink">{product.name}</h1>
       </div>
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Tiers</h2>
+          <h2 className="font-display text-lg text-ink">Tiers</h2>
           <Link
             href={`/catalog/products/${product.id}/tiers/new`}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium hover:bg-zinc-100"
+            className="rounded-sm border border-rule px-3 py-1.5 text-xs font-medium uppercase tracking-[0.1em] text-ink-soft hover:border-emerald hover:text-emerald"
           >
             + New tier
           </Link>
         </div>
 
         {tiers.length === 0 ? (
-          <p className="text-zinc-600">No tiers yet.</p>
+          <p className="text-sm text-ink-soft">No tiers yet.</p>
         ) : (
-          <table className="w-full border-collapse overflow-hidden rounded-md border border-zinc-200 bg-white text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 text-left">
-                <th className="px-4 py-2 font-medium">Tier</th>
-                <th className="px-4 py-2 font-medium">Order</th>
-                <th className="px-4 py-2 font-medium">Base price (per seat / month)</th>
+              <tr className="border-b-2 border-ink/80 text-left text-xs font-medium uppercase tracking-[0.08em] text-ink-soft">
+                <th className="py-2 pr-4 font-medium">Tier</th>
+                <th className="py-2 pr-4 font-medium">Order</th>
+                <th className="py-2 font-medium">Base price (per seat / month)</th>
               </tr>
             </thead>
             <tbody>
               {tiers.map((tier) => (
-                <tr key={tier.id} className="border-b border-zinc-100 last:border-0">
-                  <td className="px-4 py-2 font-medium">{tier.name}</td>
-                  <td className="px-4 py-2 text-zinc-500">{tier.order}</td>
-                  <td className="px-4 py-2">
+                <tr key={tier.id} className="border-b border-rule-soft last:border-0">
+                  <td className="py-3 pr-4 font-display text-base text-ink">{tier.name}</td>
+                  <td className="py-3 pr-4 font-mono text-ink-soft">{tier.order}</td>
+                  <td className="py-3">
                     <form action={updateTierBasePrice} className="flex items-center gap-2">
                       <input type="hidden" name="tierId" value={tier.id} />
                       <input type="hidden" name="productId" value={product.id} />
-                      <span className="text-zinc-500">$</span>
+                      <span className="font-mono text-ink-soft">$</span>
                       <input
                         type="number"
                         name="basePricePerSeat"
                         step="0.01"
                         min="0"
                         defaultValue={tier.basePricePerSeat.toString()}
-                        className="w-24 rounded-md border border-zinc-300 px-2 py-1"
+                        className="w-24 rounded-sm border border-rule bg-paper px-2 py-1 font-mono"
                       />
                       <button
                         type="submit"
-                        className="rounded-md border border-zinc-300 px-2 py-1 font-medium hover:bg-zinc-100"
+                        className="rounded-sm border border-rule px-2.5 py-1 text-xs font-medium uppercase tracking-[0.08em] text-ink-soft hover:border-emerald hover:text-emerald"
                       >
                         Save
                       </button>
@@ -110,28 +137,28 @@ export default async function ProductDetailPage({
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Feature availability by tier</h2>
+          <h2 className="font-display text-lg text-ink">Feature availability by tier</h2>
           <Link
             href={`/catalog/products/${product.id}/features/new`}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium hover:bg-zinc-100"
+            className="rounded-sm border border-rule px-3 py-1.5 text-xs font-medium uppercase tracking-[0.1em] text-ink-soft hover:border-emerald hover:text-emerald"
           >
             + New feature
           </Link>
         </div>
 
         {product.features.length === 0 || tiers.length === 0 ? (
-          <p className="text-zinc-600">
+          <p className="text-sm text-ink-soft">
             {tiers.length === 0
               ? "Add at least one tier before configuring features."
               : "No features yet."}
           </p>
         ) : (
-          <table className="w-full border-collapse overflow-hidden rounded-md border border-zinc-200 bg-white text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 text-left">
-                <th className="px-4 py-2 font-medium">Feature</th>
+              <tr className="border-b-2 border-ink/80 text-left text-xs font-medium uppercase tracking-[0.08em] text-ink-soft">
+                <th className="py-2 pr-4 font-medium">Feature</th>
                 {tiers.map((tier) => (
-                  <th key={tier.id} className="px-4 py-2 font-medium">
+                  <th key={tier.id} className="py-2 pr-4 font-medium">
                     {tier.name}
                   </th>
                 ))}
@@ -141,11 +168,11 @@ export default async function ProductDetailPage({
               {product.features.map((feature) => {
                 const byTier = new Map(feature.availabilities.map((a) => [a.tierId, a]));
                 return (
-                  <tr key={feature.id} className="border-b border-zinc-100 last:border-0">
-                    <td className="px-4 py-2 font-medium">
+                  <tr key={feature.id} className="border-b border-rule-soft last:border-0">
+                    <td className="py-3 pr-4">
                       <Link
                         href={`/catalog/products/${product.id}/features/${feature.id}/edit`}
-                        className="hover:underline"
+                        className="font-display text-base text-ink hover:text-emerald"
                       >
                         {feature.name}
                       </Link>
@@ -154,18 +181,14 @@ export default async function ProductDetailPage({
                       const cell = byTier.get(tier.id);
                       const availability = cell?.availability ?? "NOT_AVAILABLE";
                       return (
-                        <td key={tier.id} className="px-4 py-2">
-                          {availability === "INCLUDED" && (
-                            <span className="text-green-700">Included</span>
-                          )}
-                          {availability === "NOT_AVAILABLE" && (
-                            <span className="text-zinc-400">Not available</span>
-                          )}
-                          {availability === "ADDON" && cell?.addonPricing && (
-                            <span className="text-amber-700">
-                              Add-on — {addonSummary(cell.addonPricing.pricingModel, Number(cell.addonPricing.pricingValue))}
-                            </span>
-                          )}
+                        <td key={tier.id} className="py-3 pr-4">
+                          <AvailabilityBadge
+                            availability={availability}
+                            pricingModel={cell?.addonPricing?.pricingModel}
+                            pricingValue={
+                              cell?.addonPricing ? Number(cell.addonPricing.pricingValue) : undefined
+                            }
+                          />
                         </td>
                       );
                     })}

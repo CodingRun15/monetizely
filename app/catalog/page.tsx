@@ -8,33 +8,45 @@ export default async function CatalogPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Catalog</h1>
+    <div className="flex flex-col gap-8">
+      <div className="flex items-center justify-between border-b border-rule pb-6">
+        <div>
+          <span className="text-xs font-medium uppercase tracking-[0.18em] text-gold">Ledger</span>
+          <h1 className="font-display text-3xl text-ink">Catalog</h1>
+        </div>
         <Link
           href="/catalog/products/new"
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+          className="rounded-sm bg-emerald px-4 py-2.5 text-xs font-medium uppercase tracking-[0.12em] text-paper transition-colors hover:bg-emerald-dark"
         >
           + New product
         </Link>
       </div>
 
       {products.length === 0 ? (
-        <p className="text-zinc-600">No products yet. Create one to get started.</p>
+        <p className="text-sm text-ink-soft">No products yet. Create one to get started.</p>
       ) : (
-        <ul className="divide-y divide-zinc-200 rounded-md border border-zinc-200 bg-white">
-          {products.map((product) => (
-            <li key={product.id} className="flex items-center justify-between px-4 py-3">
-              <Link href={`/catalog/products/${product.id}`} className="font-medium hover:underline">
+        <div className="flex flex-col">
+          <div className="grid grid-cols-[1fr_auto] gap-4 border-b border-rule pb-2 text-xs font-medium uppercase tracking-[0.1em] text-ink-soft">
+            <span>Product</span>
+            <span className="text-right">Tiers · Features</span>
+          </div>
+          {products.map((product, i) => (
+            <Link
+              key={product.id}
+              href={`/catalog/products/${product.id}`}
+              className="rise-in group grid grid-cols-[1fr_auto] items-center gap-4 border-b border-rule-soft py-4 transition-colors hover:bg-paper-2/60"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <span className="font-display text-lg text-ink group-hover:text-emerald">
                 {product.name}
-              </Link>
-              <span className="text-sm text-zinc-500">
+              </span>
+              <span className="font-mono text-sm text-ink-soft">
                 {product._count.tiers} tier{product._count.tiers === 1 ? "" : "s"} ·{" "}
                 {product._count.features} feature{product._count.features === 1 ? "" : "s"}
               </span>
-            </li>
+            </Link>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

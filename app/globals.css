@@ -1,26 +1,150 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f7f2e6;
+  --paper-2: #efe7d4;
+  --ink: #1c1a22;
+  --ink-soft: #6b6356;
+  --rule: #ddd0ad;
+  --rule-soft: #e8ddc1;
+  --emerald: #1f5d4d;
+  --emerald-dark: #163f34;
+  --emerald-soft: #e3ede7;
+  --gold: #a9762f;
+  --gold-soft: #f3e6c8;
+  --not-available: #a89f8c;
+  --danger: #9a3324;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-rule: var(--rule);
+  --color-rule-soft: var(--rule-soft);
+  --color-emerald: var(--emerald);
+  --color-emerald-dark: var(--emerald-dark);
+  --color-emerald-soft: var(--emerald-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-not-available: var(--not-available);
+  --color-danger: var(--danger);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  background-image:
+    linear-gradient(var(--rule-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule-soft) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: -1px -1px;
+}
+
+.font-mono,
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.field-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.field-input {
+  border: 1px solid var(--rule);
+  border-radius: 0.125rem;
+  background: var(--paper);
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 1px var(--emerald);
+}
+
+.btn-primary {
+  border-radius: 0.125rem;
+  background: var(--emerald);
+  color: var(--paper);
+  padding: 0.65rem 1.25rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background-color 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: var(--emerald-dark);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+}
+
+.btn-secondary {
+  border-radius: 0.125rem;
+  border: 1px solid var(--rule);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: color 0.15s ease, border-color 0.15s ease;
+  background: transparent;
+}
+
+.btn-secondary:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--emerald);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise-in {
+  animation: rise-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes total-flash {
+  0% {
+    background-color: var(--gold-soft);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.total-flash {
+  animation: total-flash 0.8s ease-out;
 }

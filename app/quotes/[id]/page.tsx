@@ -30,62 +30,72 @@ export default async function QuoteViewPage({ params }: { params: Promise<{ id: 
   }
 
   return (
-    <div className="flex flex-col gap-8 max-w-3xl">
-      <div>
-        <h1 className="text-2xl font-semibold">{quote.name}</h1>
-        <p className="text-sm text-zinc-500">
-          Created {quote.createdAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-        </p>
+    <div className="mx-auto flex max-w-3xl flex-col gap-10">
+      <div className="rise-in flex items-start justify-between border-b-2 border-ink/80 pb-6">
+        <div>
+          <span className="text-xs font-medium uppercase tracking-[0.18em] text-gold">Quote</span>
+          <h1 className="mt-1 font-display text-3xl text-ink">{quote.name}</h1>
+        </div>
+        <div className="text-right font-mono text-xs text-ink-soft">
+          <p>No. {quote.id.slice(-8).toUpperCase()}</p>
+          <p>
+            {quote.createdAt.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
       </div>
 
-      <section className="rounded-md border border-zinc-200 bg-white p-4">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Quote details</h2>
-        <dl className="grid grid-cols-[10rem_1fr] gap-y-2 text-sm">
-          <dt className="text-zinc-500">Customer</dt>
-          <dd>{quote.customerName}</dd>
-          <dt className="text-zinc-500">Product</dt>
-          <dd>{quote.product.name}</dd>
-          <dt className="text-zinc-500">Tier</dt>
-          <dd>{quote.tier.name}</dd>
-          <dt className="text-zinc-500">Seats</dt>
-          <dd>{quote.seats}</dd>
-          <dt className="text-zinc-500">Term length</dt>
-          <dd>{termSummary(quote.termLength)}</dd>
-        </dl>
+      <section className="rise-in grid grid-cols-2 gap-6 sm:grid-cols-4" style={{ animationDelay: "60ms" }}>
+        {[
+          { label: "Customer", value: quote.customerName },
+          { label: "Product", value: quote.product.name },
+          { label: "Tier", value: quote.tier.name },
+          { label: "Seats", value: String(quote.seats) },
+        ].map((row) => (
+          <div key={row.label}>
+            <dt className="text-xs font-medium uppercase tracking-[0.1em] text-ink-soft">{row.label}</dt>
+            <dd className="mt-1 font-display text-lg text-ink">{row.value}</dd>
+          </div>
+        ))}
       </section>
 
-      <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Cost breakdown</h2>
-        <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 text-left">
-                <th className="px-3 py-2 font-medium">Line item</th>
-                <th className="px-3 py-2 font-medium">How it was calculated</th>
-                <th className="px-3 py-2 font-medium">Notes</th>
-                <th className="px-3 py-2 text-right font-medium">Amount (USD)</th>
+      <section className="rise-in border-t border-rule pt-4 text-sm text-ink-soft" style={{ animationDelay: "100ms" }}>
+        <span className="font-medium text-ink">Term —</span> {termSummary(quote.termLength)}
+      </section>
+
+      <section className="rise-in" style={{ animationDelay: "140ms" }}>
+        <h2 className="mb-4 text-xs font-medium uppercase tracking-[0.18em] text-gold">Cost breakdown</h2>
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b-2 border-ink/80 text-left text-xs font-medium uppercase tracking-[0.08em] text-ink-soft">
+              <th className="py-2 pr-3 font-medium">Line item</th>
+              <th className="py-2 pr-3 font-medium">How it was calculated</th>
+              <th className="py-2 pr-3 font-medium">Notes</th>
+              <th className="py-2 text-right font-medium">Amount (USD)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {quote.lineItems.map((item) => (
+              <tr key={item.id} className="border-b border-rule-soft last:border-0">
+                <td className="py-3 pr-3 font-medium text-ink">{item.label}</td>
+                <td className="py-3 pr-3 text-ink-soft">{item.description}</td>
+                <td className="py-3 pr-3 text-ink-soft">{item.notes}</td>
+                <td className="py-3 text-right font-mono text-ink">{formatCurrency(Number(item.amount))}</td>
               </tr>
-            </thead>
-            <tbody>
-              {quote.lineItems.map((item) => (
-                <tr key={item.id} className="border-b border-zinc-100 last:border-0">
-                  <td className="px-3 py-2 font-medium">{item.label}</td>
-                  <td className="px-3 py-2 text-zinc-500">{item.description}</td>
-                  <td className="px-3 py-2 text-zinc-500">{item.notes}</td>
-                  <td className="px-3 py-2 text-right">{formatCurrency(Number(item.amount))}</td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="border-t border-zinc-200 bg-zinc-50 font-semibold">
-                <td className="px-3 py-2" colSpan={3}>
-                  TOTAL
-                </td>
-                <td className="px-3 py-2 text-right">{formatCurrency(Number(quote.total))}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t-2 border-ink/80 bg-gold-soft font-semibold text-ink">
+              <td className="py-3 pr-3 text-xs uppercase tracking-[0.1em]" colSpan={3}>
+                Total
+              </td>
+              <td className="py-3 text-right font-mono text-lg">{formatCurrency(Number(quote.total))}</td>
+            </tr>
+          </tfoot>
+        </table>
       </section>
     </div>
   );

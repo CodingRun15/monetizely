@@ -28,23 +28,24 @@ export default async function EditFeatureAvailabilityPage({
   const byTier = new Map(feature.availabilities.map((a) => [a.tierId, a]));
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
-      <div>
-        <h1 className="text-2xl font-semibold">
-          {feature.name} <span className="text-zinc-400">— {product.name}</span>
-        </h1>
-        <Link href={`/catalog/products/${product.id}`} className="text-sm text-zinc-500 hover:underline">
-          ← Back to {product.name}
+    <div className="flex max-w-3xl flex-col gap-6">
+      <div className="border-b border-rule pb-4">
+        <Link
+          href={`/catalog/products/${product.id}`}
+          className="text-xs uppercase tracking-[0.12em] text-ink-soft hover:text-emerald"
+        >
+          ← {product.name}
         </Link>
+        <h1 className="mt-2 font-display text-2xl text-ink">{feature.name}</h1>
       </div>
 
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-ink-soft">
         Set this feature&apos;s availability for each tier. Add-ons need a pricing model and value;
         the same feature can be priced differently per tier.
       </p>
 
-      <div className="rounded-md border border-zinc-200 bg-white px-4">
-        <div className="grid grid-cols-[8rem_10rem_1fr_1fr_auto] gap-3 border-b border-zinc-200 py-2 text-sm font-medium text-zinc-500">
+      <div className="flex flex-col">
+        <div className="grid grid-cols-[8rem_10rem_1fr_1fr_auto] gap-3 border-b-2 border-ink/80 pb-2 text-xs font-medium uppercase tracking-[0.08em] text-ink-soft">
           <span>Tier</span>
           <span>Availability</span>
           <span>Pricing model</span>
@@ -58,7 +59,7 @@ export default async function EditFeatureAvailabilityPage({
               key={tier.id}
               productId={product.id}
               featureId={feature.id}
-              tier={tier}
+              tier={{ id: tier.id, name: tier.name }}
               initialAvailability={cell?.availability ?? "NOT_AVAILABLE"}
               initialPricingModel={cell?.addonPricing?.pricingModel ?? null}
               initialPricingValue={cell?.addonPricing ? Number(cell.addonPricing.pricingValue) : null}
