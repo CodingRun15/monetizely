@@ -3,8 +3,8 @@
 A small internal tool for a pricing consultant: set up a client's product catalog (products,
 tiers, features, add-on pricing), then build a shareable quote against it.
 
-- **Live app:** TODO — add Vercel URL after deploy
-- **Repo:** TODO — add GitHub URL
+- **Live app:** https://monetizely-seven.vercel.app
+- **Repo:** https://github.com/CodingRun15/monetizely
 
 ## Tech stack
 
